@@ -4,7 +4,8 @@ import './todolist.css';
 
 /*
    - define state object with items array
-   - create addItem event handler
+   - bind makes sure 'this' resolves properly
+   - items arrays will store all of the items you enter
 */
  class TodoList extends React.Component {
   constructor(props, context) {
@@ -20,37 +21,31 @@ import './todolist.css';
     };
      
     /* 
-      - store current value of items state object
-      - if input has content, add item object to itemArray
-      - unshift moves to beginning of the array
-      - prevent default behavior so page doesn't reload and clear everything
-      - set state object value to itemArray
-      - clear input field value
+      - newItem will store an object
+      - setState sets the new state, we concat the newItem so
+        the original array doesn't get modified
+      - clear input field value and override default submit behavior
     */
-    addItem(e) {
-        var itemArray = this.state.items;
- 
+      addItem(e) {
         if (this._inputElement.value !== "") {
-            itemArray.unshift(
-              {
-                text: this._inputElement.value,
-                key: Date.now()
-              }
-            );
-
-            this.setState({
-              items: itemArray
-            });
-
-            this._inputElement.value = "";
-        }
-
-        console.log(itemArray);
-
-        e.preventDefault();  
+          var newItem = {
+            text: this._inputElement.value,
+            key: Date.now()
+          };
+      
+          this.setState((prevState) => {
+            return { 
+              items: prevState.items.concat(newItem) 
+            };
+          });
         
-    }
-     
+          this._inputElement.value = "";
+        }
+        
+        console.log(this.state.items);
+          
+        e.preventDefault();
+      }
     /* 
      pass key from clicked item
      check key against all of the items stored, using filter
@@ -71,11 +66,12 @@ import './todolist.css';
      
   /* 
     - Create a form with an input field and submit btn 
-    - listen for submit event on the form
-    - resolve this keyword
-    - store reference to input element 
-    - this allows us to access the input element inside
-    - this component by using _inputElement
+    - Listen for submit event on the form, call addItem
+      when the submit event is heard (btn type=submit)
+    - the 'ref' lets us read the entered value from the input
+      '_inputElement.value' is what we will use
+    - Pass in our item as a prop (TodoItems)
+
   */
       render() {
         return (

@@ -22,15 +22,17 @@ delete(key) {
             key={item.key}>{item.text}</li>  
   }
  
-/* listItems is an array of li items */
+/* listItems is an array of li items 
+   entries = todo items
+   map loops through items and creates tasks
+*/
   render() {
     var todoEntries = this.props.entries;
     var listItems = todoEntries.map(this.createTasks);
  
     return (
       <ul className="theList">
-          {listItems}
-        
+          {listItems}   
       </ul>
     );
   }
